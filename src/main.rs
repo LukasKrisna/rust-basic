@@ -95,5 +95,44 @@ fn boolean_operator() {
     let b: bool = false;
     let c: bool = a && b;
     let d: bool = a || b;
-    println!("{}, {}", c, d);
+    let e: bool = !a;
+    println!("{}, {}, {}", c, d, e);
+}
+
+#[test]
+fn char_type() {
+    let a = 'z';
+    let b: char = 'y';
+    println!("{}, {}", a, b);
+}
+
+#[test]
+fn tuple() {
+    let data: (i32, f64, bool) = (1, 1.2, false);
+    let mut data2: (i32, f64) = (1, 1.2);
+    println!("{:?}", data);
+    println!("{}, {}", data.1, data.2);
+
+    // destructuring tuple
+    let (a, _, c) = data;
+    println!("{}, {}", a, c);
+
+    data2.0 = 10;
+    data2.1 = 2.1;
+    println!("{}, {}", data2.0, data2.1);
+
+}
+
+fn unit() {
+    println!("Hello");
+}
+
+#[test]
+fn test_unit() {
+    // empty tuple
+    let result = unit();
+    println!("{:?}", result);
+
+    let test: () = ();
+    println!("{:?}", test)
 }
