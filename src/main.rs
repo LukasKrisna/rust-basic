@@ -136,3 +136,53 @@ fn test_unit() {
     let test: () = ();
     println!("{:?}", test)
 }
+
+#[test]
+fn array() {
+    let mut a: [i32; 3] = [1, 2, 3];
+    println!("{:?}", a);
+
+    a[0] = 2;
+    println!("{:?}", a);
+
+    //length array
+    let length: usize = a.len();
+    println!("length a is {}", length);
+}
+
+#[test]
+fn two_dimentional_array(){
+    let matrix: [[i32; 2]; 3] = [
+        [1, 2],
+        [3, 4],
+        [5, 6]
+    ];
+    println!("{:?}", matrix);
+    println!("{}", matrix[0][0]);
+    println!("{}", matrix[0][1]);
+    println!("{}", matrix[1][0]);
+    println!("{}", matrix[1][1]);
+}
+
+const MINIMUM:i32 = i32::MIN;
+#[test]
+fn constant() {
+    const PI:f64 = 3.14;
+    println!("PI is {}", PI);
+
+    // outer scope
+    println!("{}", MINIMUM);
+}
+
+#[test]
+fn variable_scope() {
+    let a = 1; // variable scope
+
+    { // inner scope
+        println!("inner a: {}", a);
+        let b = 2;
+        println!("inner b: {}", b);
+    }
+
+    //println!("inner b: {}", b); // error
+}
