@@ -186,3 +186,44 @@ fn variable_scope() {
 
     //println!("inner b: {}", b); // error
 }
+
+#[test]
+fn stack_heap() {
+    function_a();
+    function_b();
+}
+
+fn function_a() {
+    let a = 10;
+    let b = String::from("Lukas");
+    println!("{}, {}", a, b);
+}
+
+fn function_b() {
+    let a = 10;
+    let b = String::from("Krisna");
+    println!("{}, {}", a, b);
+}
+
+#[test]
+fn string() {
+    let name: &str = " Lukas Krisna 😃 ";
+    let trim: &str = name.trim();
+    println!("{}", name);
+    println!("{}", trim);
+
+    let mut username: &str = "Lukas";
+    println!("{}", username);
+    username = "Krisna";
+    println!("{}", username);
+}
+
+#[test]
+fn string_type() {
+    let mut name: String = String::from("Lukas");
+    name.push_str(" Krisna");
+    println!("{}", name);
+
+    let lorem = name.replace("Lukas", "Lorem");
+    println!("{}", lorem);
+}
