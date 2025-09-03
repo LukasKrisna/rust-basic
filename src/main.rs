@@ -224,6 +224,50 @@ fn string_type() {
     name.push_str(" Krisna");
     println!("{}", name);
 
+    // error karena .replace() membuat nilai baru pada heap
+    // name.replace("Lukas", "Lorem")
+
     let lorem = name.replace("Lukas", "Lorem");
     println!("{}", lorem);
+}
+
+#[test]
+fn ownership_rules() {
+    // a tidak bisa diakses di sini, belum dideklarasikan
+    let a = 10; // a bisa diakses mulai dari sini
+
+    { // b tidak bisa diakses di sini, belum dideklarasikan
+        let b = 20; // b bisa diakses mulai dari sini
+        println!("{}",b);
+    } // scope b selesai, b dihapus, b tidak bisa diakses lagi
+
+    println!("{}", a);
+} // scope a selesai, a dihapus, a tidak bisa diakses lagi
+
+#[test]
+fn data_copy() {
+    let a = 10;
+    let mut b = a;
+
+    b = 20;
+    println!("{}",b);
+}
+
+#[test]
+fn ownnership_movement() {
+    let nama: String = String::from("Lukas");
+
+    // ownership dari nama dipindahkan ke nama_baru
+    let nama_baru = nama;
+    // nama tidak bisa diakses disini
+
+    print!("{}", nama_baru);
+}
+
+#[test]
+fn clone() { // clone adalah melakukan Copy untuk data pada heap
+    let name1: String = String::from("Lukas");
+    let name2: String = name1.clone();
+    println!("{}", name1);
+    println!("{}", name2);
 }
