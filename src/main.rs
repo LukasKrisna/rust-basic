@@ -271,3 +271,80 @@ fn clone() { // clone adalah melakukan Copy untuk data pada heap
     println!("{}", name1);
     println!("{}", name2);
 }
+
+#[test]
+fn if_expression() {
+    let nilai = 6;
+    let hasil: &str;
+
+    if nilai >= 8 {
+        hasil = "lolos";
+    } else if nilai >= 7 {
+        hasil = "memenuhi syarat"
+    } else {
+        hasil = "belum lolos";
+    }
+
+    println!("{}", hasil);
+
+    // if expression on let
+
+    let result =  if nilai >= 8 {
+        "lolos"
+    } else if nilai >= 7 {
+        "memenuhi syarat"
+    } else {
+        "belum lolos"
+    };
+}
+
+#[test]
+fn loop_expression() {
+    let mut counter = 0;
+
+    loop {
+        counter += 1;
+        if counter > 10 {
+            break;
+        }else if counter % 2 == 0 {
+            continue;
+        }
+
+        println!("{}", counter);
+    }
+}
+
+#[test]
+fn loop_return_value() {
+    let mut counter = 0;
+    let result = loop {
+        counter += 1;
+
+        if counter > 10 {
+            break counter * 2;
+        }
+    };
+
+    println!("{}", result);
+}
+
+#[test]
+fn loop_label() {
+    let mut number = 0;
+
+    'outer: loop {
+        let mut i = 1;
+        loop {
+            if number > 10 {
+                break 'outer;
+            }
+
+            println!("{} x {} = {}", number, i, number * i);
+            i += 1;
+            if i > 10 {
+                break;
+            }
+        }
+        number += 1;
+    }
+}
