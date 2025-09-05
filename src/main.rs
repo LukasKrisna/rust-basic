@@ -348,3 +348,146 @@ fn loop_label() {
         number += 1;
     }
 }
+
+#[test]
+fn while_loop() {
+    let mut number = 0;
+    while number <= 10 {
+        if number % 2 == 0 && number != 0  {
+            println!("{} is divisible by 2", number);
+        }
+        number += 1;
+    }
+}
+
+#[test]
+fn array_iteration_while() {
+    let array: [&str; 5] = ["A", "B", "C", "D", "E"];
+    let mut index = 0;
+
+    while index < array.len() {
+        println!("{}", array[index]);
+        index += 1;
+    }
+}
+
+#[test]
+fn for_loop_array_iteration() {
+    let array: [&str; 5] = ["A", "B", "C", "D", "E"];
+
+    for i in array.iter() {
+        println!("{}", i);
+    }
+}
+
+#[test]
+fn range() {
+    let array: [&str; 5] = ["A", "B", "C", "D", "E"];
+
+    let range = 0..5;
+    println!("Start range: {}", range.start);
+    println!("End range: {}", range.end);
+
+    for i in range {
+        println!("{}", array[i]);
+    }
+
+    println!("  ");
+    for i in 0..5 { // range exclusive
+        println!("{}", i);
+    }
+    println!("  ");
+    let range_inclusive = 0..=5;
+    println!("Start range: {}", range_inclusive.start());
+    println!("End range: {}", range_inclusive.end());
+    for i in range_inclusive { // range inclusive
+        println!("{}", i);
+    }
+}
+
+fn say_hello() {
+    println!("Hello");
+}
+
+#[test]
+fn test_say_hello() {
+    say_hello();
+}
+
+fn say_goodbye(first_name: &str, last_name: &str) {
+    println!("Goodbye, {} {}", first_name, last_name);
+}
+
+#[test ]
+fn test_say_goodbye() {
+    say_goodbye("Lukas", "Krisna");
+    say_goodbye("Lorem", "Krisna");
+}
+
+fn factorial_loop(n: i32) -> i32 {
+    if n < 1 {
+        return 0;
+    }
+
+    let mut result = 1;
+    for i in 1..=n {
+        result *= i;
+    }
+
+    result
+}
+
+#[test]
+fn test_factorial() {
+    let result = factorial_loop(5  );
+
+    println!("{}", result) ;
+}
+
+fn print_text_recursive(value: String, times: u32) {
+    if times == 0 {
+        return;
+    } else {
+        println!("{}", value);
+    }
+
+    print_text_recursive(value, times - 1);
+}
+
+#[test]
+fn test_print_text_recursive() {
+    print_text_recursive(String::from("Lukas"), 10);
+}
+
+fn factorial_recursive(n: u32) -> u32 {
+    if n == 1 {
+        return 1;
+    }
+
+    n * factorial_recursive(n - 1)
+}
+
+#[test]
+fn test_factorial_recursive() {
+    let result = factorial_recursive(5);
+    println!("{}", result) ;
+}
+
+// function ownership
+fn print_number(number: i32) {
+    println!("Number: {}", number);
+}
+
+fn hi(name: String){
+    println!("Hi, {}", name);
+}
+#[test]
+fn test_hi_print_number() {
+    let number = 10;
+    print_number(number);
+    println!("{}", number); // number dicopy pada stack
+
+    let name = String::from("Lukas");
+    hi(name);
+    // println!("{}", name); // error karena ownership name pindah pada parameter function hi
+}
