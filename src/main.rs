@@ -491,3 +491,107 @@ fn test_hi_print_number() {
     hi(name);
     // println!("{}", name); // error karena ownership name pindah pada parameter function hi
 }
+
+fn full_name(first_name: String, last_name: String) -> String {
+    format!("{} {}", first_name, last_name)
+}
+
+#[test]
+fn test_full_name() {
+    let first_name = String::from("Lukas");
+    let last_name = String::from("Krisna");
+
+    let full_name = full_name(first_name, last_name);
+    println!("{}", full_name);
+    // println!("{}", first_name); error, return value first_name berpindah
+}
+
+// mengembalikan ownership
+fn full_name_2(first_name: String, last_name: String) -> (String, String, String) {
+    let full_name = format!("{} {}", first_name, last_name);
+
+    (first_name, last_name, full_name)
+}
+
+#[test]
+fn test_full_name2() {
+    let first_name = String::from("Lukas");
+    let last_name = String::from("Krisna");
+
+    let (a, b, name) = full_name_2(first_name, last_name);
+    println!("{}", name);
+    println!("{}", a);
+    println!("{}", b);
+}
+
+// reference
+fn full_name_reference(first_name: &String, last_name: &String) -> String {
+    format!("{} {}", first_name, last_name)
+}
+
+#[test]
+fn test_full_name_reference() {
+    let first_name = String::from("Lukas");
+    let last_name = String::from("Krisna");
+
+    let full_name = full_name_reference(&first_name, &last_name);
+    println!("{}", full_name);
+    println!("{}", first_name);
+}
+
+// borrowing error
+/* fn change_value(value: &String) -> String {
+     value.push_str("Lukas"); //error cannot borrow immutable local variable
+} */
+
+#[test]
+fn test_change_value_error() {
+    let mut value = String::from("Lukas");
+    // change_value(&value);
+    println!("{}", value);
+}
+
+// borrowing change value
+fn change_value(value: &mut String) {
+     value.push_str("Lukas"); //error cannot borrow immutable local variable
+}
+
+#[test]
+fn test_change_value() {
+    let mut value = String::from("Krisna");
+    change_value(&mut value);
+    change_value(&mut value);
+    change_value(&mut value);
+    println!("{}", value);
+}
+
+// dangling pointer
+/* fn get_full_name(first_name: &String, last_name: &String) -> &String {
+    let name = format!("{} {}", first_name, last_name);
+    return &name;
+} */
+
+// #[test]
+/* fn test_get_full_name() {
+    let first_name = String::from("Lukas");
+    let last_name = String::from("Krisna");
+
+    let full_name = get_full_name(&first_name, &last_name);
+    println!("{}", full_name);
+} */
+
+fn get_full_name(first_name: &String, last_name: &String) -> String {
+    let name = format!("{} {}", first_name, last_name);
+    return name;
+}
+
+#[test]
+fn test_get_full_name() {
+    let first_name = String::from("Lukas");
+    let last_name = String::from("Krisna");
+
+    let full_name = get_full_name(&first_name, &last_name);
+    println!("{}", full_name);
+    println!("{}", first_name);
+    println!("{}", last_name);
+}
