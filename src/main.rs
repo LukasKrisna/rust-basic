@@ -595,3 +595,112 @@ fn test_get_full_name() {
     println!("{}", first_name);
     println!("{}", last_name);
 }
+
+#[test]
+fn slice_reference() {
+    let array: [i32; 10] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    let slice = &array[..];
+    println!("{:?}", slice);
+
+    let slice2 = &array[0..5];
+    println!("{:?}", slice2);
+
+    let slice3 = &array[5..];
+    println!("{:?}", slice3);
+}
+
+#[test]
+fn string_slice() {
+    let name: String = String::from("Lukas Krisna");
+    let first_name = &name[0..5];
+    println!("{:?}", first_name);
+
+    let last_name = &name[6..];
+    println!("{:?}", last_name);
+}
+
+struct Person{
+    first_name: String,
+    last_name: String,
+    age: u8,
+}
+
+fn print_person(person: &Person) {
+    println!("{}", person.first_name);
+    println!("{}", person.last_name);
+    println!("{}", person.age);
+}
+
+#[test]
+fn test_sturct_person() {
+    // let first_name = String::from("Lukas"); <- init shorthand
+
+    let person: Person = Person {
+        // first_name, ownership berpindah
+        first_name: String::from("Lukas"),
+        last_name: String::from("Krisna"),
+        age: 21,
+    };
+
+    print_person(&person);
+
+    // let person2: Person = Person{..person} hati hati dengan perpindahan ownership data di heap
+    let person2: Person = Person{ // struct update syntax
+        first_name: person.first_name.clone(),
+        last_name: person.last_name.clone(),
+        ..person
+    };
+
+    print_person(&person2);
+}
+
+struct GeoPoint(f64, f64);
+
+#[test]
+fn tuple_struct() {
+    let geo_point: GeoPoint = GeoPoint(123.3, 456.6);
+    println!("long: {}", geo_point.0);
+    println!("lat: {}", geo_point.1);
+}
+
+// struct tanpa field
+struct Nothing;
+
+#[test]
+fn test_nothing() {
+    let _nothing: Nothing = Nothing;
+    let _nothing1: Nothing = Nothing {};
+}
+
+// method
+impl Person {
+    fn say_hello(&self, name: &str) {
+        println!("Hello, {}!, my name is {}",name, self.first_name);
+    }
+}
+
+#[test]
+fn test_method() {
+    let person: Person = Person {
+        // first_name, ownership berpindah
+        first_name: String::from("Lukas"),
+        last_name: String::from("Krisna"),
+        age: 21,
+    };
+
+    person.say_hello("Lorem");
+}
+
+// Associated Functions yang bukan method
+impl GeoPoint {
+    fn new(long: f64, lat: f64) -> GeoPoint {
+        GeoPoint(long, lat)
+    }
+}
+
+#[test]
+fn test_new_geo_point() {
+    let geo_point: GeoPoint = GeoPoint::new(-456.6, -123.3);
+    println!("long: {}", geo_point.0);
+    println!("lat: {}", geo_point.1);
+}
