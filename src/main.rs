@@ -767,3 +767,106 @@ fn test_pattern_matching() {
     }
 }
 
+#[test]
+fn test_match_value() {
+    let name = "Lukas";
+
+    match name {
+        "Lukas" | "Krisna" => {
+            println!("Hello Admin");
+        }
+        "Lorem" => {
+            println!("Hello User");
+        }
+        other => {
+            println!("Hello {}", other);
+        }
+    }
+}
+
+#[test]
+fn test_range_patterns() {
+    let value = 100;
+    match value {
+        75..=100 => {
+            println!("Great");
+        }
+        50..=74 => {
+            println!("Good");
+        }
+        25..=49 => {
+            println!("Not bad");
+        }
+        0..=24 => {
+            println!("Bad");
+        }
+        other => {
+            println!("Invalid value {}", other);
+        }
+    }
+}
+
+#[test]
+fn test_struct_pattern() {
+    let geo_point: GeoPoint = GeoPoint::new(-456.6, -123.3);
+    match geo_point {
+        GeoPoint(long, 0.0) => {
+            println!("Longitude: {}", long);
+        }
+        GeoPoint(0.0, lat) => {
+            println!("Latitude: {}", lat);
+        }
+        GeoPoint(long, lat) => {
+            println!("Longitude: {}, Latitude: {}",long ,lat);
+        }
+        // GeoPoint(long, _) => { // ignoring match pattern
+        //     println!("Invalid GeoPoint");
+        // }
+    }
+
+    let person: Person = Person {
+        first_name: String::from("Lukas"),
+        last_name: String::from("Krisna"),
+        age: 21,
+    };
+    match person {
+        Person {first_name, last_name, ..} => {
+            println!("FirstName: {}, LastName: {}", first_name, last_name);
+        }
+    }
+}
+
+#[test]
+fn test_match_expression() {
+    let angka: i8 = 3;
+    let result = match angka {
+        0 => "nol",
+        1 => "satu",
+        2 => "dua",
+        3 => "tiga",
+        _ => "ignore",
+    };
+
+    println!("angka: {}", result);
+}
+
+// type alias
+type Age = u8;
+type IdentityNumber = String;
+
+struct Customer {
+    id: IdentityNumber,
+    name: String,
+    age: Age,
+}
+
+#[test]
+fn test_type_alias() {
+    let customer: Customer = Customer {
+        id: String::from("330291012012"),
+        name: String::from("Lukas"),
+        age: 20,
+    };
+
+    println!("ID: {}, name: {}, age: {}", customer.id, customer.name, customer.age);
+}
