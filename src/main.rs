@@ -704,3 +704,66 @@ fn test_new_geo_point() {
     println!("long: {}", geo_point.0);
     println!("lat: {}", geo_point.1);
 }
+
+enum Level {
+    Regular,
+    Premium,
+    Platinum,
+}
+
+#[test]
+fn test_enum() {
+    let _level: Level = Level::Regular;
+}
+
+enum Payment {
+    // card number
+    CreditCard(String),
+    //bank name, account number
+    BankTransfer(String, String),
+    // ewallet name, ewallet number
+    EWallet(String, String),
+}
+
+impl Payment {
+    fn pay(&self, amount: u32) {
+        match self {
+            Payment::CreditCard(number) => {
+                println!("Paying with credit card {} amount {}", number, amount);
+            }
+            Payment::BankTransfer(bank, number) => {
+                println!("Paying with bank {} {} transfer amount {}", bank, number, amount);
+            }
+            Payment::EWallet(wallet, number) => {
+                println!("Paying with E-WaLlet {} {} amount {}", wallet, number, amount);
+            }
+        }
+    }
+}
+
+#[test]
+fn test_payment() {
+    let payment: Payment = Payment::BankTransfer(String::from("BCA"), String::from("10914732321"));
+    let _payment2: Payment = Payment::CreditCard(String::from("10914732321"));
+
+    payment.pay(100);
+}
+
+// pattern matching enum
+#[test]
+fn test_pattern_matching() {
+    let level: Level = Level::Regular;
+
+    match level {
+        Level::Regular => {
+            println!("Regular");
+        }
+        Level::Premium => {
+            println!("Premium");
+        }
+        Level::Platinum => {
+            println!("Platinum");
+        }
+    }
+}
+
