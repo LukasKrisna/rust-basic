@@ -1,3 +1,5 @@
+use crate::model::User;
+
 fn main() {
     println!("Hello, world!");
 }
@@ -405,13 +407,13 @@ fn range() {
     }
 }
 
-fn say_hello() {
-    println!("Hello");
-}
+// fn say_hello() {
+//     println!("Hello");
+// }
 
 #[test]
 fn test_say_hello() {
-    say_hello();
+    // say_hello();
 }
 
 fn say_goodbye(first_name: &str, last_name: &str) {
@@ -869,4 +871,68 @@ fn test_type_alias() {
     };
 
     println!("ID: {}, name: {}, age: {}", customer.id, customer.name, customer.age);
+}
+
+// mod model {
+//     use crate::Age;
+//
+//     pub struct User {
+//         pub first_name: String,
+//         pub last_name: String,
+//         pub username: String,
+//         pub email: String,
+//         pub age: Age,
+//     }
+//
+//     impl User {
+//         pub fn say_hello(&self, name: &str) {
+//             println!("Hello {}, my name is {}", name, self.first_name);
+//         }
+//     }
+// }
+
+mod model;
+
+use model::User as UserModel;
+// use model::*; mengambil semua member
+//use model::{User, say_hello}; spesific member
+
+#[test]
+fn test_module() {
+    let user = UserModel {
+        first_name: String::from("Lukas"),
+        last_name: String::from("Krisna"),
+        username: String::from("lukaskrisna"),
+        email: String::from("lukaskrisna@gmail.com"),
+        age: 21,
+    };
+
+    user.say_hello("Lorem");
+}
+
+// mod first {
+//     pub fn say_hello() {
+//         println!("Hello first module!");
+//     }
+// }
+//
+// mod second {
+//     pub fn say_hello() {
+//         println!("Hello second module!");
+//     }
+// }
+
+mod first;
+mod second;
+mod third;
+
+use first::say_hello as say_hello_first;
+use second::say_hello as say_hello_second;
+
+#[test]
+fn test_use_say_hello() {
+    say_hello_first();
+    say_hello_second();
+
+    first::second::third::say_hello();
 }
