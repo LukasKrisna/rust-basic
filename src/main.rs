@@ -1,3 +1,4 @@
+use std::fmt::format;
 use crate::model::User;
 
 fn main() {
@@ -935,4 +936,127 @@ fn test_use_say_hello() {
     say_hello_second();
 
     first::second::third::say_hello();
+}
+
+trait CanSayHello {
+    fn hello(&self) -> String {
+        String::from("Hello")
+    }
+    fn say_hello(&self) -> String;
+    fn say_hello_to(&self, name: &str) -> String;
+}
+
+impl CanSayHello for Person {
+    fn say_hello(&self) -> String {
+        format!("Hello my name is {}", self.first_name)
+    }
+
+    fn say_hello_to(&self, name: &str) -> String {
+        format!("Hello, {} my name is {}", name, self.first_name)
+    }
+}
+
+// trait sebagai parameter
+fn say_hello_trait(value: &impl CanSayHello) {
+    println!("{}", value.say_hello());
+}
+
+trait CanSayGoodbye {
+    fn goodbye(&self) -> String;
+    fn goodbye_to(&self, name: &str) -> String;
+}
+
+fn hello_and_goodbye(value: &(impl CanSayHello + CanSayGoodbye)) {
+    println!("{}", value.say_hello());
+    println!("{}", value.goodbye());
+}
+impl CanSayGoodbye for Person {
+    fn goodbye(&self) -> String {
+        format!("Goodbye, my name is {}", self.first_name)
+    }
+    fn goodbye_to(&self, name: &str) -> String {
+        format!("Goodbye, {} my name is {}", name, self.first_name)
+    }
+}
+
+#[test]
+fn test_trait() {
+    let person: Person = Person {
+        first_name: String::from("Lukas"),
+        last_name: String::from("Krisna"),
+        age: 21,
+    };
+
+    say_hello_trait(&person);
+    hello_and_goodbye(&person);
+
+    let hello = person.hello();
+    println!("{}", hello);
+    println!("{}", person.say_hello_to("Lorem"));
+
+    println!("{}", person.goodbye());
+    println!("{}", person.goodbye_to("Lorem"));
+
+    // menghindari conflict method name
+    CanSayHello::say_hello(&person);
+    Person::say_hello(&person, "Lorem");
+}
+
+struct SimplePerson {
+    name: String,
+}
+
+impl CanSayGoodbye for SimplePerson {
+    fn goodbye(&self) -> String {
+        format!("Goodbye, my name is {}", self.name)
+    }
+    fn goodbye_to(&self, name: &str) -> String {
+        format!("Goodbye, {} my name is {}", name, self.name)
+    }
+}
+
+fn create_person(name: String) -> impl CanSayGoodbye {
+    SimplePerson { name }
+}
+
+#[test]
+fn test_simple_trait() {
+    let person = create_person(String::from("Lukas"));
+    println!("{}", person.goodbye());
+}
+
+// super trait
+trait CanSay: CanSayHello + CanSayGoodbye {
+    fn say(&self) {
+        println!("{}", self.say_hello());
+        println!("{}", self.goodbye());
+    }
+}
+
+struct SimpleMan {
+    name: String,
+}
+
+impl CanSayHello for SimpleMan {
+    fn say_hello(&self) -> String {
+        todo!()
+    }
+
+    fn say_hello_to(&self, name: &str) -> String {
+        todo!()
+    }
+}
+
+impl CanSayGoodbye for SimpleMan {
+    fn goodbye(&self) -> String {
+        todo!()
+    }
+
+    fn goodbye_to(&self, name: &str) -> String {
+        todo!()
+    }
+}
+
+impl CanSay for SimpleMan {
+
 }
