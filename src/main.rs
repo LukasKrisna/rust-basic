@@ -1060,3 +1060,105 @@ impl CanSayGoodbye for SimpleMan {
 impl CanSay for SimpleMan {
 
 }
+
+// generic
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+// default generic type
+/*struct Point<T = i32> {
+    x: T,
+    y: T,
+} */
+
+#[test]
+fn test_generic_struct() {
+    let integer: Point<i32> = Point::<i32> { x: 5, y: 10 };
+    let float: Point<f64> = Point::<f64> {x: 1.0, y: 2.0 };
+
+    println!("integer x: {}, y: {}", integer.x, integer.y);
+    println!("float x: {}, y: {}", float.x, float.y);
+}
+
+enum Value<T> {
+    NONE,
+    VALUE(T),
+}
+
+#[test]
+fn test_generic_enum() {
+    let value: Value<i32> = Value::<i32>::VALUE(10);
+    match value {
+        Value::NONE => println!("NONE"),
+        Value::VALUE(val) => println!("val: {}", val),
+    }
+}
+
+struct Hi<T: CanSayGoodbye> {
+    value: T,
+}
+
+// generic bound
+#[test]
+fn test_generic_struct_with_trait() {
+    let hi = Hi::<SimplePerson> {
+        value: SimplePerson {
+            name: String::from("Lukas"),
+        }
+    };
+
+    println!("{}", hi.value.name);
+    println!("{}", hi.value.goodbye_to("Lorem"));
+}
+
+// generic function
+fn min<T: PartialOrd>(value1: T, value2: T) -> T {
+    if value1 < value2 { value1 } else { value2 }
+}
+
+#[test]
+fn generic_in_function() {
+    let result = min::<i32>(10, 20);
+    println!("{}", result);
+}
+
+// generic method
+impl<T> Point<T> {
+    fn get_x(&self) -> &T {
+        &self.x
+    }
+    fn get_y(&self) -> &T {
+        &self.y
+    }
+}
+
+#[test]
+fn test_generic_method() {
+    let point = Point { x: 5, y: 10 };
+    println!("{}", point.get_x());
+    println!("{}", point.get_y());
+}
+
+// generic trait
+trait GetValue<T> {
+    fn get_value(&self) -> &T;
+}
+
+impl<T> GetValue<T> for Point<T> {
+    fn get_value(&self) -> &T {
+        &self.x
+    }
+}
+
+// where clause
+/*trait GetValue<T> where T: PartialOrd {
+    fn get_value(&self) -> &T;
+} */
+
+/*impl<T> GetValue<T> for Point<T> where T: PartialOrd {
+    fn get_value(&self) -> &T {
+        &self.x
+    }
+} */
