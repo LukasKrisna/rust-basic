@@ -1587,3 +1587,93 @@ fn test_connect_app() {
         }
     }
 }
+
+// lifetime
+
+/* fn test_dangling_reference() {
+    let r: &i32;
+    {
+        let x= 5;
+        r = &x; // error karena x sudah dihapus ketika keluar dari scope
+    }
+    println!("{}", r);
+} */
+
+// lifetime annotation function
+fn longest<'a>(value1: &'a str, value2: &'a str) -> &'a str {
+    if value1.len() > value2.len() {
+        value1
+    }else {
+        value2
+    }
+}
+
+#[test]
+fn test_lifetime_annotation() {
+    let value1 = "Hello";
+    let value2 = "Hello World";
+
+    let result = longest(value1, value2);
+    println!("{}", result);
+}
+
+// lifetime annotation struct
+struct Student<'a> {
+    name: &'a str
+}
+
+fn longest_student_name<'a>(student1: &Student<'a>, student2: &Student<'a>) -> &'a str {
+    if student1.name.len() > student2.name.len() {
+        student1.name
+    }else {
+        student2.name
+    }
+}
+
+#[test]
+fn test_student_function() {
+    let student1 = Student {
+        name: "Jane"
+    };
+    let student2 = Student {
+        name: "Doe"
+    };
+    println!("{}", longest_student_name(&student1, &student2));
+}
+
+// lifetime annotation method
+impl<'a> Student<'a> {
+    fn longest_name(&self, student: &Student<'a>) -> &'a str {
+        if self.name.len() > student.name.len() {
+            &self.name
+        }
+        else {
+            student.name
+        }
+    }
+}
+
+#[test]
+fn test_student_method() {
+    let student1 = Student {
+        name: "Jane"
+    };
+    let student2 = Student {
+        name: "Doe"
+    };
+    println!("{}", student1.longest_name(&student2));
+}
+
+// lifetime annotation generic type
+struct Teacher<'a, ID>
+    where ID: Ord,
+{
+    id: ID,
+    name: &'a str
+}
+
+#[test]
+fn test_lifetime_annotation_generic_struct() {
+    let teacher: Teacher<i32> = Teacher { id: 1, name: "Lukas" };
+    println!("teacher: {} - {}", teacher.id, teacher.name);
+}
