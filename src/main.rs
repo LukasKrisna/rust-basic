@@ -1162,3 +1162,86 @@ impl<T> GetValue<T> for Point<T> {
         &self.x
     }
 } */
+
+// overloadable operators
+struct Apple {
+    quantity: i32
+}
+
+use core::ops::Add;
+use std::cmp::Ordering;
+
+impl Add for Apple {
+    type Output = Apple;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Apple {
+            quantity: self.quantity + rhs.quantity
+        }
+    }
+}
+
+#[test]
+fn test_operator_add() {
+    let apple1 = Apple { quantity: 10 };
+    let apple2 = Apple { quantity: 20 };
+
+    let result = apple1 + apple2;
+    println!("{}", result.quantity);
+}
+
+// optional values
+fn double(value: Option<i32>) -> Option<i32> {
+    match value {
+        None => None,
+        Some(num) => Some(num * 2)
+    }
+}
+
+#[test]
+fn test_option() {
+    let result = double(Some(10));
+    println!("{}", result.unwrap());
+
+    let result = double(None);
+    println!("{:?}", result);
+}
+
+// comparing
+impl PartialEq for Apple {
+    fn eq(&self, other: &Self) -> bool {
+        self.quantity == other.quantity
+    }
+}
+
+impl PartialOrd for Apple {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.quantity.partial_cmp(&other.quantity)
+    }
+}
+
+#[test]
+fn test_compare() {
+    let apple1 = Apple { quantity: 10 };
+    let apple2 = Apple { quantity: 20 };
+
+    println!("apple1 == apple2: {}", apple1 == apple2);
+    println!("apple1 < apple2: {}", apple1 < apple2);
+    println!("apple1 > apple2: {}", apple1 > apple2);
+}
+
+// string manipulation
+#[test]
+fn test_string_manipulation() {
+    let s: String = String::from("Lukas Krisna");
+
+    println!("{}", s.to_uppercase());
+    println!("{}", s.to_lowercase());
+    println!("{}", s.len());
+    println!("{}", s.replace("Lukas", "Lorem"));
+    println!("{}", s.contains("Krisna"));
+    println!("{}", s.starts_with("Lukas"));
+    println!("{}", s.ends_with("Krisna"));
+    println!("{}", s.trim());
+    println!("{:?}", s.get(0..5).unwrap());
+}
