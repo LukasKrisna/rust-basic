@@ -1,4 +1,4 @@
-use std::fmt::format;
+use std::fmt::{format, Debug};
 use crate::model::User;
 
 fn main() {
@@ -1170,6 +1170,7 @@ struct Apple {
 
 use core::ops::Add;
 use std::cmp::Ordering;
+use std::collections::{LinkedList, VecDeque};
 
 impl Add for Apple {
     type Output = Apple;
@@ -1244,4 +1245,152 @@ fn test_string_manipulation() {
     println!("{}", s.ends_with("Krisna"));
     println!("{}", s.trim());
     println!("{:?}", s.get(0..5).unwrap());
+}
+
+// formatting
+struct Category {
+    id: String,
+    name: String,
+}
+
+impl Debug for Category {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Category")
+            .field("id", &self.id)
+            .field("name", &self.name)
+            .finish()
+    }
+}
+
+#[test]
+fn test_formatting() {
+    let category = Category {
+        id: String::from("123abc"),
+        name: String::from("Lukas Krisna"),
+    };
+
+    println!("{:?}", category);
+}
+
+// closure
+#[test]
+fn test_closure() {
+    let sum= |a, b| -> i32 {
+        a + b
+    };
+
+    let result = sum(2, 3);
+    println!("{}", result);
+}
+
+// closure parameter
+fn print_with_filter(value: String, filter: fn(String) -> String) {
+    let result = filter(value);
+    println!("{}", result);
+}
+
+#[test]
+fn test_closure_as_parameter() {
+    let name = String::from("Lukas Krisna");
+    print_with_filter(name, |value| { value.to_uppercase() });
+}
+
+fn to_uppercase_func(s: String) -> String {
+    s.to_uppercase()
+}
+
+#[test]
+fn test_function_as_closure() {
+    let name = String::from("Lukas Krisna");
+    print_with_filter(String::from("Lukas Krisna"), to_uppercase_func);
+}
+
+// closure scope (hati hati penggunaanya)
+#[test]
+fn test_closure_scope() {
+    let mut counter = 0;
+
+    let mut increment = || {
+        counter += 1; counter
+    };
+
+    increment();
+    increment();
+    increment();
+
+    println!("Counter: {}", counter);
+}
+
+// alternative counter dengan closure
+struct Counter {
+    counter: i32
+}
+
+impl Counter {
+    fn increment(&mut self) {
+        self.counter += 1;
+        println!("Increment!");
+    }
+}
+
+#[test]
+fn test_closure_scope_with_struct() {
+    let mut counter = Counter { counter: 0 };
+
+    counter.increment();
+    counter.increment();
+    counter.increment();
+
+    println!("Counter: {}", counter.counter);
+}
+
+// collection (sequences, maps, sets)
+
+// vector (sequences)
+#[test]
+fn test_vector() {
+    let mut names: Vec<String> = Vec::<String>::new();
+    names.push(String::from("Lukas"));
+    names.push(String::from("Krisna"));
+
+    for name in &names {
+        println!("{}", name);
+    }
+
+    println!("{:?}", names);
+
+    // akses menggunakan index
+    println!("{}", names[0]);
+}
+
+// vecdeque (sequences)
+#[test]
+fn test_vec_deque() {
+    let mut names: VecDeque<String> = VecDeque::<String>::new();
+    names.push_back(String::from("Lukas"));
+    names.push_back(String::from("Krisna"));
+    names.push_front(String::from("Lorem"));
+
+    // vector berada di heap
+    for name in &names {
+        println!("{}", name);
+    }
+
+    println!("{:?}", names);
+}
+
+// linked list (sequences)
+
+#[test]
+fn test_linked_list() {
+    let mut names: LinkedList<String> = LinkedList::<String>::new();
+    names.push_back(String::from("Lukas"));
+    names.push_back(String::from("Krisna"));
+    names.push_front(String::from("Lorem"));
+
+    for name in &names {
+        println!("{}", name);
+    }
+
+    println!("{:?}", names);
 }
