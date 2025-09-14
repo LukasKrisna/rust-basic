@@ -1677,3 +1677,34 @@ fn test_lifetime_annotation_generic_struct() {
     let teacher: Teacher<i32> = Teacher { id: 1, name: "Lukas" };
     println!("teacher: {} - {}", teacher.id, teacher.name);
 }
+
+// attributes
+#[derive(Debug, PartialEq, PartialOrd)]
+struct Company {
+    name: String,
+    location: String,
+    website: String,
+}
+
+#[test]
+fn test_attribute_derive() {
+    let company = Company {
+        name: "Lukas Krisna".to_string(),
+        location: "Indonesia".to_string(),
+        website: "https://www.lukaskrisna.com/".to_string(),
+    };
+
+    let company2 = Company {
+        name: "Lukas Krisna".to_string(),
+        location: "Indonesia".to_string(),
+        website: "https://www.lukaskrisna.com/".to_string(),
+    };
+
+    println!("{:?}", company);
+
+    let result = company == company2;
+    println!("{}", result);
+
+    let result = company > company2;
+    println!("{}", result);
+}
