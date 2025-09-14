@@ -1170,7 +1170,7 @@ struct Apple {
 
 use core::ops::Add;
 use std::cmp::Ordering;
-use std::collections::{LinkedList, VecDeque};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
 
 impl Add for Apple {
     type Output = Apple;
@@ -1393,4 +1393,197 @@ fn test_linked_list() {
     }
 
     println!("{:?}", names);
+}
+
+// hashmap (maps)
+#[test]
+fn test_hash_map() {
+    let mut map = HashMap::<String, String>::new();
+    map.insert(String::from("name"), String::from("Lukas Krisna"));
+    map.insert(String::from("age"), String::from("21"));
+
+    let name = map.get("name").unwrap();
+    let age = map.get("age").unwrap();
+
+    println!("name is {}, age is {}", name, age);
+}
+
+// btreemap (maps)
+#[test]
+fn test_b_tree_map() {
+    let mut map = BTreeMap::<String, String>::new();
+    map.insert(String::from("name"), String::from("Lukas Krisna"));
+    map.insert(String::from("age"), String::from("21"));
+    map.insert(String::from("country"), String::from("Indonesia"));
+
+    // let name = map.get("name").unwrap();
+    // let age = map.get("age").unwrap();
+    // let country = map.get("country").unwrap();
+    //
+    // println!("name is {}, age is {}, from {}", name, age, country);
+
+    for entry in map {
+        println!("{}, {}", entry.0, entry.1);
+    }
+}
+
+// hashset (set)
+#[test]
+fn test_hash_set() {
+    let mut set = HashSet::new();
+    set.insert(String::from("Lukas"));
+    set.insert(String::from("Lukas"));
+    set.insert(String::from("Krisna"));
+    set.insert(String::from("Krisna"));
+    set.insert(String::from("Lorem"));
+    set.insert(String::from("Lorem"));
+
+    for name in set {
+        println!("{}", name);
+    }
+}
+
+// btreeset (set)
+#[test]
+fn test_b_tree_set() {
+    let mut set = BTreeSet::new();
+    set.insert(String::from("Lukas"));
+    set.insert(String::from("Lukas"));
+    set.insert(String::from("Krisna"));
+    set.insert(String::from("Krisna"));
+    set.insert(String::from("Lorem"));
+    set.insert(String::from("Lorem"));
+
+    for name in set {
+        println!("{}", name);
+    }
+}
+
+// iterator
+#[test]
+fn test_iterator() {
+    let array: [i32; 5] = [1, 2, 3, 4, 5];
+    let mut iter = array.iter();
+
+    // manual
+    while let Some(value) = iter.next() {
+        println!("{}", value);
+    }
+
+    for value in array{
+        println!("{}", value);
+    }
+}
+
+#[test]
+fn test_iterator_method() {
+    let vector: Vec<i32> = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    println!("Vector: {:?}", vector);
+    let sum: i32 = vector.iter().sum();
+    println!("Sum: {}", sum);
+    let count: usize = vector.iter().count();
+    println!("Count: {}", count);
+    let doubled: Vec<i32> = vector.iter().map(|x| x * 2).collect();
+    println!("Doubled: {:?}", doubled);
+    let odd: Vec<&i32> = vector.iter().filter(|x| *x % 2 != 0).collect();
+    println!("Odd: {:?}", odd);
+}
+
+// unrecoverable error (error handling)
+fn connect_database(host: Option<String>) {
+    match host {
+        Some(host) => {
+            println!("Connecting to database: {}", host);
+        }
+        None => {
+            panic!("No database connection");
+        }
+    }
+}
+#[test]
+fn test_connect_database() {
+    connect_database(Some(String::from("localhost")));
+    // connect_database(None));
+}
+
+// recoverable error (error handling)
+fn connect_cache(host: Option<String>) -> Result<String, String> {
+    match host {
+        Some(host) => {
+            Ok(host)
+        },
+        None => {
+            Err(String::from("No cache host provided"))
+        }
+    }
+}
+
+fn connect_email(host: Option<String>) -> Result<String, String> {
+    match host {
+        Some(host) => {
+            Ok(host)
+        },
+        None => {
+            Err(String::from("No email host provided"))
+        }
+    }
+}
+
+#[test]
+fn test_recoverable_error() {
+    // let cache = connect_cache(Some(String::from("localhost")));
+    let cache = connect_cache(None);
+    match cache {
+        Ok(host) => {
+            println!("Connecting to cache at: {}", host);
+        }
+        Err(err) => {
+            println!("Error connecting to cache: {}", err);
+        }
+    }
+}
+
+// tanpa ? operator
+fn connect_application_without_operator(host: Option<String>) -> Result<String, String> {
+    let cache_result = connect_cache(host.clone());
+
+    match cache_result {
+        Ok(_) => {}
+        Err(err) => {
+            return Err(err);
+        }
+    }
+
+    let email_result = connect_email(host.clone());
+
+    match email_result {
+        Ok(_) => {}
+        Err(err) => {
+            return Err(err);
+        }
+    }
+
+    Ok("Successfully connected to application".to_string())
+}
+
+// dengan ? operator
+fn connect_application(host: Option<String>) -> Result<String, String> {
+    connect_cache(host.clone())?;
+    connect_email(host.clone())?;
+    Ok(String::from("Successfully connected to application"))
+}
+
+#[test]
+fn test_connect_app() {
+    // let result = connect_application(None);
+    let result = connect_application(Some("localhost".to_string()));
+
+    match result {
+        Ok(msg) => {
+            println!("{}", msg);
+        }
+        Err(err) => {
+            println!("Error connecting to application: {}", err);
+        }
+    }
 }
