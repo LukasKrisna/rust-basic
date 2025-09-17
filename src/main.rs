@@ -1172,6 +1172,7 @@ use core::ops::Add;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
 use std::io::SeekFrom::End;
+use std::ops::Deref;
 
 impl Add for Apple {
     type Output = Apple;
@@ -1749,4 +1750,66 @@ fn test_box_enum() {
 
 fn print_category(category: &ProductCategory) {
     println!("{:?}", category);
+}
+
+// dereference
+#[test]
+fn test_dereference() {
+    let value1 = Box::new(10);
+    let value2 = Box::new(20);
+
+    let result = *value1 * *value2;
+    println!("{}", result);
+}
+
+// deref trait
+struct MyValue<T> {
+    value: T,
+}
+
+impl<T> Deref for MyValue<T> {
+    type Target = T;
+
+    fn deref(&self) -> &T {
+        &self.value
+    }
+}
+
+#[test]
+fn test_deref() {
+    let value = MyValue { value: 10 };
+    let real_value = *value;
+    println!("{}", real_value);
+}
+
+// deref parameter
+fn say_hello_reference(name: &String) {
+    println!("Hello {}", name);
+}
+
+#[test]
+fn test_deref_coersion() {
+    let name = MyValue {
+        value: "Lukas".to_string(),
+    };
+    say_hello_reference(&name);
+}
+
+// drop trait
+struct Book {
+    title: String,
+}
+
+impl Drop for Book {
+    fn drop(&mut self) {
+        println!("Dropping book: {}", self.title);
+    }
+}
+
+#[test]
+fn test_drop_book() {
+    let title = Book {
+        title: "Rust Programming".to_string(),
+    };
+    println!("Book: {}", title.title);
 }
