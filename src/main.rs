@@ -1171,6 +1171,7 @@ struct Apple {
 use core::ops::Add;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
+use std::io::SeekFrom::End;
 
 impl Add for Apple {
     type Output = Apple;
@@ -1707,4 +1708,45 @@ fn test_attribute_derive() {
 
     let result = company > company2;
     println!("{}", result);
+}
+
+// smart pointer
+#[test]
+fn test_box() {
+    let value: Box<i32> = Box::new(10);
+    println!("{}", value);
+    display_number(*value);
+    display_number_reference(&value);
+}
+
+fn display_number(value: i32) {
+    println!("{}", value);
+}
+
+fn display_number_reference(value: &i32) {
+    println!("{}", value);
+}
+
+#[derive(Debug)]
+enum ProductCategory {
+    Of(String, Box<ProductCategory>),
+    End,
+}
+
+#[test]
+fn test_box_enum() {
+    let lenovo_category = Box::new(
+        ProductCategory::Of("Lenovo".to_string(),
+                            Box::new(ProductCategory::End)
+        ));
+    let category = ProductCategory::Of(
+        "Laptop".to_string(),
+        lenovo_category,
+    );
+
+    print_category(&category);
+}
+
+fn print_category(category: &ProductCategory) {
+    println!("{:?}", category);
 }
