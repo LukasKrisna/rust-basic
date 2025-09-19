@@ -1169,10 +1169,12 @@ struct Apple {
 }
 
 use core::ops::Add;
+use std::cell::RefCell;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
 use std::io::SeekFrom::End;
 use std::ops::Deref;
+use std::rc::Rc;
 
 impl Add for Apple {
     type Output = Apple;
@@ -1812,4 +1814,45 @@ fn test_drop_book() {
         title: "Rust Programming".to_string(),
     };
     println!("Book: {}", title.title);
+}
+
+// multiple ownership
+enum Brand {
+    Of(String, Rc<Brand>),
+    End
+}
+#[test]
+fn test_multiple_ownership() {
+    let apple: Rc<Brand> = Rc::new(Brand::Of("Apple".to_string(), Rc::new(Brand::End)));
+    println!("Apple reference count: {}", Rc::strong_count(&apple));
+    let laptop: Brand = Brand::Of("Laptop".to_string(), Rc::clone(&apple));
+    println!("Apple reference count: {}", Rc::strong_count(&apple));
+    {
+        let smartphone: Brand = Brand::Of("Smartphone".to_string(), apple.clone());
+        println!("Apple reference count: {}", Rc::strong_count(&apple));
+    }
+    println!("Apple reference count: {}", Rc::strong_count(&apple));
+
+    // let apple = ProductCategory::Of("Apple".to_string(), Box::new(ProductCategory::End));
+    // let laptop = ProductCategory::Of("Laptop".to_string(), Box::new(apple));
+    // let smartphone = ProductCategory::Of("Smartphone".to_string(), Box::new(apple));
+}
+
+#[derive(Debug)]
+struct Seller {
+    name: RefCell<String>,
+    active: RefCell<bool>,
+}
+
+#[test]
+fn test_ref_cell() {
+    let seller = Seller {
+        name: RefCell::new("Lukas".to_string()),
+        active: RefCell::new(true),
+    };
+
+    let mut result = seller.active.borrow_mut();
+    *result = false;
+
+    println!("{:?}", result);
 }
