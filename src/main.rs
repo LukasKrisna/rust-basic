@@ -1856,3 +1856,62 @@ fn test_ref_cell() {
 
     println!("{:?}", result);
 }
+
+// static
+static APPLICATION: &str = "My Application";
+
+#[test]
+fn test_static() {
+    println!("{}", APPLICATION);
+}
+
+static mut COUNTER: u32 = 0;
+
+unsafe fn increment() {
+    COUNTER += 1;
+}
+
+#[test]
+fn test_static_mut() {
+    unsafe {
+        increment();
+        COUNTER += 1;
+        // println!("COUNTER: {}", COUNTER);
+    }
+
+}
+
+// macro
+macro_rules! hi {
+    () => {
+        println!("Hi");
+    };
+    ($name: expr) => {
+        println!("Hi {}!", $name);
+    }
+}
+
+#[test]
+fn test_macro() {
+    hi!();
+    hi!("Lukas");
+}
+
+macro_rules! iterate {
+    ($array: expr) => {
+        for i in $array {
+            println!("{}", i);
+        }
+    };
+    ($($item: expr),*) => {
+        $(
+        println!("{}", $item);
+        )*
+    }
+}
+
+#[test]
+fn test_macro_iterate() {
+    iterate!([5, 4, 3, 2, 1]);
+    iterate!(1, 2, 3, 4, 5);
+}
